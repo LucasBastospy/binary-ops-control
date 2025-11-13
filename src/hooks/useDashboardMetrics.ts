@@ -71,7 +71,7 @@ export function useDashboardMetrics() {
             .reduce((sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0), 0)
 
       // Dados do gráfico da evolução da banca (últimos 30 dias)
-      const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const thirtyDaysAgo = Math.floor((Date.now() - 30 * 24 * 60 * 60 * 1000) / 1000);
       
       const { data: bancaHistory } = await (supabase as any)
         .from("saldo_banca")
