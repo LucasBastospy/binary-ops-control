@@ -41,14 +41,34 @@ export function useDashboardMetrics() {
         (op: any) => op.resultado === "PENDENTE"
       ).length;
 
-      // Calcular lucro diário (últimas 24h)
-      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-      const dailyProfit = operations
-        .filter((op: any) => op.timestamp >= oneDayAgo)
-        .reduce((sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0), 0);
+      // Buscar banca atual da tabela saldo_banca
+      const { data: bancaData } = await (supabase as any)
+        .from("saldo_banca")
+        .select("*")
+        .order("timestamp", { ascending: false })
+        .limit(1)
+        .single();
 
-      // Calcular bankroll (soma acumulada)
-      const bankroll = 1000 + totalProfit; // Base inicial de 1000
+      const bankroll = bancaData ? Number(bancaData.banca_atual) : 1000 + totalProfit;
+
+      // Calcular lucro diário (diferença entre banca atual e banca do início do dia)
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const startOfDayTimestamp = startOfDay.getTime();
+
+      const { data: startDayBanca } = await (supabase as any)
+        .from("saldo_banca")
+        .select("banca_atual")
+        .lte("timestamp", startOfDayTimestamp)
+        .order("timestamp", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const dailyProfit = startDayBanca 
+        ? bankroll - Number(startDayBanca.banca_atual)
+        : operations
+            .filter((op: any) => op.timestamp >= startOfDayTimestamp)
+            .reduce((sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0), 0)
 
       // Dados do gráfico (últimos 30 dias)
       const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
