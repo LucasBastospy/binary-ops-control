@@ -70,23 +70,23 @@ export function useDashboardMetrics() {
             .filter((op: any) => op.timestamp >= startOfDayTimestamp)
             .reduce((sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0), 0)
 
-      // Dados do gráfico (últimos 30 dias)
+      // Dados do gráfico da evolução da banca (últimos 30 dias)
       const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-      const recentOps = operations.filter((op: any) => op.timestamp >= thirtyDaysAgo);
       
-      const chartData: Array<{ date: string; balance: number }> = [];
-      let runningBalance = bankroll - totalProfit;
+      const { data: bancaHistory } = await (supabase as any)
+        .from("saldo_banca")
+        .select("*")
+        .gte("timestamp", thirtyDaysAgo)
+        .order("timestamp", { ascending: true });
 
-      recentOps.forEach((op: any) => {
-        runningBalance += Number(op.lucro_prejuizo || 0);
-        chartData.push({
-          date: new Date(op.timestamp).toLocaleDateString("pt-BR", {
+      const chartData: Array<{ date: string; balance: number }> = 
+        (bancaHistory || []).map((entry: any) => ({
+          date: new Date(entry.timestamp).toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
           }),
-          balance: runningBalance,
-        });
-      });
+          balance: Number(entry.banca_atual),
+        }));
 
       // Agrupar por ativo para estatísticas de estratégia
       const strategyMap = new Map<

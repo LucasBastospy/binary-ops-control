@@ -26,7 +26,7 @@ export function useOperations() {
       return (data as any[]).map((entry: any) => ({
         id: entry.id,
         ativo: entry.ativo,
-        timestamp: new Date(entry.timestamp).toLocaleString("pt-BR"),
+        timestamp: new Date(entry.created_at).toLocaleString("pt-BR"),
         direcao: entry.direcao as "CALL" | "PUT",
         valor_entrada: Number(entry.valor_entrada),
         resultado: entry.resultado as "WIN" | "LOSS" | "PENDENTE",
