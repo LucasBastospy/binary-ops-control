@@ -32,10 +32,9 @@ export function useDashboardMetrics() {
       const wins = operations.filter((op: any) => op.resultado === "WIN").length;
       const winRate = totalOperations > 0 ? (wins / totalOperations) * 100 : 0;
 
-      const totalProfit = operations.reduce(
-        (sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0),
-        0
-      );
+      const totalProfit = operations
+        .filter((op: any) => op.resultado !== "PENDENTE")
+        .reduce((sum: number, op: any) => sum + Number(op.lucro_prejuizo || 0), 0);
 
       const activeOperations = operations.filter(
         (op: any) => op.resultado === "PENDENTE"
