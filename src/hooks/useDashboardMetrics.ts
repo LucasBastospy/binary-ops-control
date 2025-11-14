@@ -51,12 +51,12 @@ export function useDashboardMetrics() {
         // Verificar se há algum WIN na sequência
         const hasWin = ops.some(op => op.resultado === "WIN");
         
-        // Verificar se a sequência está completa (tem G2 com LOSS ou qualquer WIN)
+        // Verificar se a sequência está completa (tem G3 com LOSS ou qualquer WIN)
         const maxGale = Math.max(...ops.map(op => op.gale_nivel));
         const lastOp = ops.find(op => op.gale_nivel === maxGale);
         
         // Só contabilizar sequências que estão finalizadas
-        if (hasWin || (lastOp?.resultado === "LOSS" && maxGale === 2)) {
+        if (hasWin || (lastOp?.resultado === "LOSS" && maxGale === 3)) {
           totalSequences++;
           if (hasWin) {
             winSequences++;
