@@ -28,9 +28,43 @@ export function useDashboardMetrics() {
       if (error) throw error;
 
       const operations = data as any[];
-      const totalOperations = operations.length;
-      const wins = operations.filter((op: any) => op.resultado === "WIN").length;
-      const winRate = totalOperations > 0 ? (wins / totalOperations) * 100 : 0;
+      
+      // Agrupar operações por ativo e timestamp próximo para identificar sequências de Gale
+      const sequences = new Map<string, any[]>();
+      
+      operations.forEach((op: any) => {
+        const key = `${op.ativo}_${Math.floor(op.timestamp / 60000)}`; // Agrupa por minuto
+        if (!sequences.has(key)) {
+          sequences.set(key, []);
+        }
+        sequences.get(key)!.push(op);
+      });
+      
+      // Calcular resultado de cada sequência
+      let totalSequences = 0;
+      let winSequences = 0;
+      
+      sequences.forEach((ops) => {
+        // Ordenar por gale_nivel para analisar a sequência
+        ops.sort((a, b) => a.gale_nivel - b.gale_nivel);
+        
+        // Verificar se há algum WIN na sequência
+        const hasWin = ops.some(op => op.resultado === "WIN");
+        
+        // Verificar se a sequência está completa (tem G2 com LOSS ou qualquer WIN)
+        const maxGale = Math.max(...ops.map(op => op.gale_nivel));
+        const lastOp = ops.find(op => op.gale_nivel === maxGale);
+        
+        // Só contabilizar sequências que estão finalizadas
+        if (hasWin || (lastOp?.resultado === "LOSS" && maxGale === 2)) {
+          totalSequences++;
+          if (hasWin) {
+            winSequences++;
+          }
+        }
+      });
+      
+      const winRate = totalSequences > 0 ? (winSequences / totalSequences) * 100 : 0;
 
       const totalProfit = operations
         .filter((op: any) => op.resultado !== "PENDENTE")
