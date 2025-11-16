@@ -14,7 +14,147 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      candles: {
+        Row: {
+          ativo: string
+          close: number
+          created_at: string | null
+          high: number
+          id: number
+          low: number
+          open: number
+          timestamp: number
+          volume: number | null
+        }
+        Insert: {
+          ativo: string
+          close: number
+          created_at?: string | null
+          high: number
+          id?: number
+          low: number
+          open: number
+          timestamp: number
+          volume?: number | null
+        }
+        Update: {
+          ativo?: string
+          close?: number
+          created_at?: string | null
+          high?: number
+          id?: number
+          low?: number
+          open?: number
+          timestamp?: number
+          volume?: number | null
+        }
+        Relationships: []
+      }
+      entradas: {
+        Row: {
+          ativo: string
+          created_at: string | null
+          direcao: string
+          gale_nivel: number | null
+          id: number
+          lucro_prejuizo: number | null
+          preco_entrada: number
+          preco_saida: number | null
+          resultado: string | null
+          timestamp: number
+          updated_at: string | null
+          valor_entrada: number
+        }
+        Insert: {
+          ativo: string
+          created_at?: string | null
+          direcao: string
+          gale_nivel?: number | null
+          id?: number
+          lucro_prejuizo?: number | null
+          preco_entrada: number
+          preco_saida?: number | null
+          resultado?: string | null
+          timestamp: number
+          updated_at?: string | null
+          valor_entrada: number
+        }
+        Update: {
+          ativo?: string
+          created_at?: string | null
+          direcao?: string
+          gale_nivel?: number | null
+          id?: number
+          lucro_prejuizo?: number | null
+          preco_entrada?: number
+          preco_saida?: number | null
+          resultado?: string | null
+          timestamp?: number
+          updated_at?: string | null
+          valor_entrada?: number
+        }
+        Relationships: []
+      }
+      saldo_banca: {
+        Row: {
+          banca_atual: number
+          data_hora: string | null
+          id: number
+          operacoes_ativas: number | null
+          sinais_hora: number | null
+          timestamp: number
+        }
+        Insert: {
+          banca_atual: number
+          data_hora?: string | null
+          id?: number
+          operacoes_ativas?: number | null
+          sinais_hora?: number | null
+          timestamp: number
+        }
+        Update: {
+          banca_atual?: number
+          data_hora?: string | null
+          id?: number
+          operacoes_ativas?: number | null
+          sinais_hora?: number | null
+          timestamp?: number
+        }
+        Relationships: []
+      }
+      sinais: {
+        Row: {
+          ativo: string
+          confianca: number
+          created_at: string | null
+          direcao: string
+          estrategias: string | null
+          executado: boolean | null
+          id: number
+          timestamp: number
+        }
+        Insert: {
+          ativo: string
+          confianca: number
+          created_at?: string | null
+          direcao: string
+          estrategias?: string | null
+          executado?: boolean | null
+          id?: number
+          timestamp: number
+        }
+        Update: {
+          ativo?: string
+          confianca?: number
+          created_at?: string | null
+          direcao?: string
+          estrategias?: string | null
+          executado?: boolean | null
+          id?: number
+          timestamp?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
