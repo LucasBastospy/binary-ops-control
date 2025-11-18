@@ -18,7 +18,12 @@ export function useOperations() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("entradas")
-        .select("*")
+        .select(`
+          *,
+          sinais!inner(created_at)
+        `)
+        .eq("entradas.ativo", "sinais.ativo")
+        .eq("entradas.timestamp", "sinais.timestamp")
         .order("timestamp", { ascending: false });
 
       if (error) throw error;
@@ -26,7 +31,9 @@ export function useOperations() {
       return (data as any[]).map((entry: any) => ({
         id: entry.id,
         ativo: entry.ativo,
-        timestamp: new Date(entry.timestamp).toLocaleString("pt-BR"),
+        timestamp: entry.sinais?.created_at 
+          ? new Date(entry.sinais.created_at).toLocaleString("pt-BR")
+          : new Date(entry.timestamp).toLocaleString("pt-BR"),
         direcao: entry.direcao as "CALL" | "PUT",
         valor_entrada: Number(entry.valor_entrada),
         resultado: entry.resultado as "WIN" | "LOSS" | "PENDENTE",
