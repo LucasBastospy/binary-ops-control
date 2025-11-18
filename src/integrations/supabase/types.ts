@@ -57,6 +57,7 @@ export type Database = {
           direcao: string
           gale_nivel: number | null
           id: number
+          id_order: number | null
           lucro_prejuizo: number | null
           preco_entrada: number
           preco_saida: number | null
@@ -71,6 +72,7 @@ export type Database = {
           direcao: string
           gale_nivel?: number | null
           id?: number
+          id_order?: number | null
           lucro_prejuizo?: number | null
           preco_entrada: number
           preco_saida?: number | null
@@ -85,6 +87,7 @@ export type Database = {
           direcao?: string
           gale_nivel?: number | null
           id?: number
+          id_order?: number | null
           lucro_prejuizo?: number | null
           preco_entrada?: number
           preco_saida?: number | null
